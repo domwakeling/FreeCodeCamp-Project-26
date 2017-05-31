@@ -1,0 +1,8 @@
+a {
+    text-decoration: none;
+    color: $color__link-font-color;
+
+    &:hover {
+        color: darken($color__link-font-color, 20%);
+    }
+}

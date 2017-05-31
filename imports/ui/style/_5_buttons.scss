@@ -1,0 +1,17 @@
+@mixin btn {
+    border-radius: 3px;
+    border-style: none;
+    cursor: pointer;
+}
+
+.main-button {
+    @include btn;
+    // vertical-align: middle;
+    color: $color__project-inverse;
+    padding: 5px 10px;
+    background-color: $color__project-theme;
+    @include font__body-font;
+    font-size: 1.0rem;
+    display: block;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 2px 10px;
+}

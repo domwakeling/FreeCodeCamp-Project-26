@@ -1,0 +1,21 @@
+$color__project-theme: hsl(33, 89%, 55%);
+$color__project-contrast: #0070A5;
+$color__project-inverse: #eee;
+
+$color__bg-color: #ccc;
+$color__mid-grey: #444;
+$color__light-grey: #888;
+
+$color__body-font-color: darken($color__project-theme, 40%);
+$color__title-font-color: darken($color__project-theme, 0%);
+$color__link-font-color: $color__project-theme;
+
+$navbar__hamburger_outline_color: $color__project-inverse;
+$navbar__hamburger_lines_color: $color__project-inverse;
+$navbar__bgcolor: darken($color__project-theme, 48.5%);
+$navbar__link_color: $color__project-inverse;
+$navbar__link_color_alt: $color__project-theme;
+$navbar__dropdown_bgcolor: darken($color__project-theme, 45%);
+$navbar__dropdown_border_color: darken($color__project-theme, 48%);
+$navbar__dropdown_bgcolor: darken($color__project-theme, 45%);
+$navbar__dropdown_border_color: darken($color__project-theme, 48%);
