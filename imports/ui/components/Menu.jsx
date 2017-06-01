@@ -1,4 +1,5 @@
 import React from 'react';
+import AccountsUIWrapper from './AccountsWrapper.jsx';
 
 export default class MenuItems extends React.Component {
     render() {
@@ -6,7 +7,7 @@ export default class MenuItems extends React.Component {
             <ul>
                 <li><a href='#'>Home</a></li>
                 <li><a href='#'>Map</a></li>
-                <li><a href='#'>Search</a></li>
+                <li><AccountsUIWrapper /></li>
             </ul>
         );
     }

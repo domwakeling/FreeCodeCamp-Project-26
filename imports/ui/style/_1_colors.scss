@@ -1,6 +1,6 @@
-$color__project-theme: hsl(33, 89%, 55%);
-$color__project-contrast: #0070A5;
-$color__project-inverse: #eee;
+$color__project-theme: #005F8B;
+$color__project-contrast: hsl(33, 89%, 55%);
+$color__project-inverse: darken($color__project-theme, 40%);
 
 $color__bg-color: #ccc;
 $color__mid-grey: #444;
@@ -12,7 +12,7 @@ $color__link-font-color: $color__project-theme;
 
 $navbar__hamburger_outline_color: $color__project-inverse;
 $navbar__hamburger_lines_color: $color__project-inverse;
-$navbar__bgcolor: darken($color__project-theme, 48.5%);
+$navbar__bgcolor: #ddd;
 $navbar__link_color: $color__project-inverse;
 $navbar__link_color_alt: $color__project-theme;
 $navbar__dropdown_bgcolor: darken($color__project-theme, 45%);

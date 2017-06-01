@@ -16,7 +16,7 @@ export default class Navbar extends React.Component {
 
                     <div className='container'>
                         <div className='brand'>
-                            <a href='/'>ski-slopes.uk</a>
+                            <a href='/'>FCC26 Polling App</a>
                         </div>
 
                         <button
