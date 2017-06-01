@@ -9,10 +9,9 @@ class IndexPage extends React.Component {
     render() {
         return (
             <Layout>
-                <p>This might actually be working</p>
                 { this.props.user ?
-                    <p>{this.props.user._id}</p> :
-                    <p>No user</p>
+                    <button className='main-button'>Make new poll</button> :
+                    ''
                 }
             </Layout>
         );

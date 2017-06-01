@@ -171,4 +171,22 @@ button.menu-toggle-button {
 #login-buttons {
     position: relative;
     bottom: 1px;
+
+    .login-display-name {
+        @include font__body-font;
+    }
+
+    .single-login-button {
+        @include font__body-font;
+        background-color: $color__project-theme;
+        border-color: darken($color__project-theme, 10%);
+        &:hover {
+            background-color: lighten($color__project-theme, 3%);
+        }
+    }
+
+    .login-image {
+        background-image: url('/images/GitHub-Mark-Light-16px-sharp.png');
+    }
+
 }
