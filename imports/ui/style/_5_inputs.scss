@@ -1,0 +1,25 @@
+.poll-header {
+    text-align: center;
+    margin-bottom: $structure__font-pad_horiz;
+}
+
+.labelSpan {
+    display:table-cell;
+}
+
+.wrapSpan {
+    display:table-cell;
+    width:95%;
+}
+
+.textSpan {
+    display: table-cell;
+    margin-left: 10px;
+    width:95%;
+}
+
+input[type=text] {
+    @include font__body-font;
+    font-size: $font__body-font-size;
+    margin-bottom: $structure__font-pad_horiz;
+}

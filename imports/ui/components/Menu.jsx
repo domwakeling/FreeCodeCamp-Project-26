@@ -5,8 +5,6 @@ export default class MenuItems extends React.Component {
     render() {
         return (
             <ul>
-                <li><a href='#'>Home</a></li>
-                <li><a href='#'>Map</a></li>
                 <li><AccountsUIWrapper /></li>
             </ul>
         );

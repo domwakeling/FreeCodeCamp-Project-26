@@ -2,6 +2,9 @@
     border-radius: 3px;
     border-style: none;
     cursor: pointer;
+    &:focus {
+        outline: none;
+    }
 }
 
 .main-button {
@@ -15,5 +18,17 @@
     box-shadow: rgba(0, 0, 0, 0.3) 0 2px 10px;
     &:hover {
         background-color: lighten($color__project-theme, 3%);
+    }
+}
+
+.btn-right {
+    float: right;
+    margin-left: $structure__font-pad_horiz;
+}
+
+.btn-cancel {
+    background-color: $color__cancel-button;
+    &:hover {
+        background-color: lighten($color__cancel-button, 3%);
     }
 }

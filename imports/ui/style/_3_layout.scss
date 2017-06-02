@@ -10,6 +10,23 @@ $structure__font-pad_horiz: 10px;
         padding-left: 0;
         padding-left: 0;
     }
+
+    .container-minor {
+        @include for-tablet-portrait-up {
+            width: 30%;
+            float: left;
+            padding-right: $structure__font-pad_horiz;
+        }
+    }
+
+    .container-major {
+        @include for-tablet-portrait-up {
+            width: 69%;
+            float: right;
+            padding-left: $structure__font-pad_horiz;
+            border-left: $color__project-theme 1px solid;
+        }
+    }
 }
 
 .mast-head {
