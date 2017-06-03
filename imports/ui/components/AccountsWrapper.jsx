@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 
+// To use accounts_ui packages and their login buttons, need to write the
+// code in Blaze and wrap in a React component
 export default class AccountsUIWrapper extends Component {
 
     componentDidMount() {

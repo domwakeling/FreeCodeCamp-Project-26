@@ -3,12 +3,16 @@ import MenuItems from './Menu.jsx';
 
 export default class Navbar extends React.Component {
 
-    // make the menu button work
+    // Handler for when the hamburger is clicked
     clickHandler() {
         $('.navbar-collapse').slideToggle(200);
         $('.menu-toggle-button').blur();
     }
 
+    // Full width navbar, content in a div.container which CSS matches to
+    // screen width, include a brand + hamburger for small screens and two
+    // copies of the menu items (one for plain and one for hamburger). The
+    // div.head-space is just a spacer between navbar and content
     render() {
         return (
             <div>

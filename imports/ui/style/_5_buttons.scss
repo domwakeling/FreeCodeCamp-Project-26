@@ -40,6 +40,15 @@
     }
 }
 
+.add-button {
+    height: 22px;
+    width: 22px;
+    font-style: bold;
+    font-size: 1.0rem;
+    padding: 0 0 0;
+    margin-top: $structure__font-pad_horiz;
+}
+
 .btn-right {
     float: right;
     margin-left: $structure__font-pad_horiz;
