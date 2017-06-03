@@ -183,6 +183,9 @@ button.menu-toggle-button {
         &:hover {
             background-color: lighten($color__project-theme, 3%);
         }
+        &:active {
+            background-color: darken($color__project-theme, 3%);
+        }
     }
 
     .login-image {
