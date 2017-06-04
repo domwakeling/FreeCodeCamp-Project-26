@@ -3,21 +3,26 @@ import PropTypes from 'prop-types';
 import { Session } from 'meteor/session';
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'underscore';
+import { createContainer } from 'meteor/react-meteor-data';
+import { Polls } from '../../api/polls.js';
+import PollDetailVote from './PollDetailVote.jsx';
+// import { Bert } from 'meteor/themeteorchef:bert';
 
-export default class PollDetailView extends React.Component {
+class PollDetailView extends React.Component {
 
-    // Helper function to confirm whether user has voted
+    // Helper function to confirm whether current user has voted
     hasVoted() {
+        const poll = _.find(this.props.polls, {_id: this.props.pollId});
         // if someone is logged in ...
-        if (Meteor.user()) {
+        if (this.props.user) {
             // get the user id and check if they're in 'voters' array
             const user = Meteor.userId();
-            return _.contains(this.props.poll.voters, user);
+            return _.contains(poll.voters, user);
 
         // otherwise, check if there's a session ...
         } else if (Session.get('votedOn')) {
             const votedOn = Session.get('votedOn');
-            return _.contains(votedOn, this.props.poll._id);
+            return _.contains(votedOn, this.props.pollId);
 
         // otherwise, no session info so return false
         } else {
@@ -26,27 +31,41 @@ export default class PollDetailView extends React.Component {
     }
 
     // This is a temporary fix
-    renderOptions() {
-        return this.props.poll.options.map((option, idx) => {
+    // TODO: write the data visualisation properly!
+    renderVisualisation() {
+        const poll = _.find(this.props.polls, {_id: this.props.pollId});
+        return poll.options.map((option, idx) => {
             return (
-                <p key={idx}>{option}: {this.props.poll.votesCount[idx]}</p>
+                <p key={idx}>{option}: {poll.votesCount[idx]}</p>
             );
         });
     }
 
-    renderView() {
+    // Render the poll voting view
+    renderVoting(poll) {
+        return (
+            <PollDetailVote
+                poll={poll}
+            />
+        );
+    }
+
+    // Render the detailed view (visualisation or vote)
+    renderView(poll) {
         if (this.hasVoted()) {
-            return this.renderOptions();
+            return this.renderVisualisation();
         } else {
-            return (<p>NEED TO DEAL WITH VOTING</p>);
+            return this.renderVoting(poll);
         }
     }
 
+    // Show subject and call a visualisastion
     render() {
+        const poll = _.find(this.props.polls, {_id: this.props.pollId});
         return (
             <div>
-                <h3>{this.props.poll.subject}</h3>
-                {this.renderView()}
+                <h3>{poll.subject}</h3>
+                {this.renderView(poll)}
             </div>
         );
     }
@@ -54,5 +73,14 @@ export default class PollDetailView extends React.Component {
 
 // Prevent eslint error report by declaring props
 PollDetailView.propTypes = {
-    poll: PropTypes.object.isRequired
+    pollId: PropTypes.string.isRequired,
+    polls: PropTypes.array.isRequired,
+    user: PropTypes.object
 };
+
+export default createContainer(() => {
+    return {
+        polls: Polls.find({}).fetch(),
+        user: Meteor.user()
+    };
+}, PollDetailView);

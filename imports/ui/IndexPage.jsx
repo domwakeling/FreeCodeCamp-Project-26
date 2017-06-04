@@ -94,12 +94,10 @@ class IndexPage extends React.Component {
 
     // Check that we have a valid poll selected and if so render it
     renderPollDetail() {
-        const selectedPoll = _.find(
-            this.props.polls, {_id: this.state.selectedPoll}
-        );
-        if (selectedPoll) {
+        // note that this is passing an **ID**
+        if (this.state.selectedPoll !== '') {
             return (
-                <PollDetailView poll={selectedPoll}/>
+                <PollDetailView pollId={this.state.selectedPoll}/>
             );
         } else {
             return <div />;
