@@ -10,14 +10,14 @@ button.menu-toggle-button {
     margin-right: 9px;
     margin-top: 0.6rem;
     background-color: $navbar__bgcolor;
-    border: 1px solid $navbar__hamburger_outline_color;
+    border: 1px solid $navbar__hamburger-outline-color;
 
     &:after {
         clear: right;
     };
 
     div.icon-bar {
-        background-color: $navbar__hamburger_lines_color;
+        background-color: $navbar__hamburger-lines-color;
         border-radius: 2px 2px 2px 2px;
         height: 2px;
         margin-top: 0.4em;
@@ -40,11 +40,11 @@ button.menu-toggle-button {
     a,
     li,
     ul {
-        color: $navbar__link_color;
+        color: $navbar__link-color;
     }
 
     a:hover {
-        color: $navbar__link_color_alt;
+        color: $navbar__link-color-alt;
     }
     // font sizes common to both
     ul ul a {
@@ -80,7 +80,7 @@ button.menu-toggle-button {
             top: 2.6em;
             left: -999em;
             z-index: 99999;
-            background-color: $navbar__dropdown_bgcolor;
+            background-color: $navbar__dropdown-bgcolor;
             border: none;
             border-radius: 5px;
 
@@ -135,7 +135,7 @@ button.menu-toggle-button {
 
 .navbar-collapse {
     position: fixed;
-    top: $navbar__collapse_height;
+    top: $navbar__collapse-height;
     width: 100%;
     overflow: auto;
 }
@@ -179,7 +179,8 @@ button.menu-toggle-button {
     .single-login-button {
         @include font__body-font;
         background-color: $color__project-theme;
-        border-color: darken($color__project-theme, 10%);
+        // border-color: darken($color__project-theme, 10%);
+        border-color: $color__project-inverse;
         &:hover {
             background-color: lighten($color__project-theme, 3%);
         }

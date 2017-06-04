@@ -3,6 +3,15 @@ a {
     color: $color__link-font-color;
 
     &:hover {
-        color: darken($color__link-font-color, 20%);
+        color: $color__link-font-color-alt;
+    }
+}
+
+.brand {
+    a {
+        color: $color__project-inverse !important;
+        &:hover {
+            color: $color__project-inverse !important;
+        }
     }
 }

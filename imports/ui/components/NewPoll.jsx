@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import NewPollOption from './NewPollOption.jsx';
 
 export default class NewPoll extends React.Component {
@@ -9,9 +10,11 @@ export default class NewPoll extends React.Component {
         this.state = {
             options: ['', '']
         };
-        this.removeOption = this.removeOption.bind(this);
         this.addOption = this.addOption.bind(this);
+        this.cancelPoll = this.cancelPoll.bind(this);
+        this.removeOption = this.removeOption.bind(this);
         this.reportUpdate = this.reportUpdate.bind(this);
+        this.savePoll = this.savePoll.bind(this);
     }
 
     // Passed to NewPollOption children as a callback so changing their
@@ -44,6 +47,29 @@ export default class NewPoll extends React.Component {
         this.setState({
             options: currOptions
         });
+    }
+
+    // Handler for 'add poll' button, which calls the callback from IndexPage
+    savePoll() {
+        const subject = $('input[name=pSubject]')[0].value;
+        if (subject !== '') {
+            var foundBlank = false;
+            this.state.options.forEach((option) => {
+                if (option === '') {foundBlank = true;}
+            });
+            if (!foundBlank) {
+                this.props.savePollCallback(subject, this.state.options);
+            } else {
+                // deal with blank option
+            }
+        } else {
+            // deal with blank subject
+        }
+    }
+
+    // Handler for 'add poll' button, which calls the callback from IndexPage
+    cancelPoll() {
+        this.props.cancelCallback();
     }
 
     // Iterate through this.state.options (using map) to create a NewPollOption
@@ -82,7 +108,7 @@ export default class NewPoll extends React.Component {
 
                 <div className='input-label'>Subject</div>
                 <div className='input-container'>
-                    <input className='input-text'name='pSubject' type='text'/>
+                    <input className='input-text' name='pSubject' type='text'/>
                 </div>
                 <div className='clearfix' />
                 <br />
@@ -101,7 +127,25 @@ export default class NewPoll extends React.Component {
                 <div className='clearfix' />
                 <br />
 
+                <button
+                    className='main-button btn-right btn-cancel'
+                    onClick={this.cancelPoll}
+                    >
+                    Cancel
+                </button>
+                <button
+                    className='main-button btn-right'
+                    onClick={this.savePoll}
+                    >
+                    Save poll
+                </button>
+
             </div>
         );
     }
 }
+
+NewPoll.propTypes = {
+    cancelCallback: PropTypes.func,
+    savePollCallback: PropTypes.func
+};

@@ -35,9 +35,24 @@ class IndexPage extends React.Component {
         });
     }
 
-    // Handler for 'cancel' button pressed - changes this.state.entryPoint
-    // to 'index' which will cause poll to disappear through logic in render()
+    // Handler passed to NewPoll as callback, to deal with cancelling the poll;
+    // this.state.entryPoint set to 'index' which will cause poll to disappear
+    // through logic in render();
     cancelPoll() {
+        this.setState({
+            entryPoint: 'index'
+        });
+    }
+
+    // Handler passed to NewPoll as callback, to deal with saving the poll;
+    // add object to collection and change this.state.entryPoint to 'index'
+    savePoll(subject, options) {
+        Polls.insert({
+            createdBy: Meteor.userId(),
+            subject: subject,
+            options: options
+        });
+
         this.setState({
             entryPoint: 'index'
         });
@@ -77,20 +92,14 @@ class IndexPage extends React.Component {
             // default to showing a NewPoll
             // TODO: change this once logic completed, should default to list?
             default:
+                this.boundSavePoll = this.savePoll.bind(this);
+                this.boundCancelPoll = this.cancelPoll.bind(this);
                 return (
                     <div>
-                        <NewPoll />
-                        <button
-                            className='main-button btn-right btn-cancel'
-                            onClick={this.cancelPoll}
-                            >
-                            Cancel
-                        </button>
-                        <button
-                            className='main-button btn-right'
-                            >
-                            Save poll
-                        </button>
+                        <NewPoll
+                            cancelCallback={this.boundCancelPoll}
+                            savePollCallback={this.boundSavePoll}
+                        />
                     </div>
                 );
         }

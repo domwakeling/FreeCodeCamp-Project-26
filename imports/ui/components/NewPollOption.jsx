@@ -29,7 +29,6 @@ export default class NewPollOption extends React.Component {
             <div className='poll-option'>
                 <input
                     className='input-text'
-                    name='pSubject'
                     onChange={this.boundChangeHandler}
                     type='text'
                     value={currentText}
