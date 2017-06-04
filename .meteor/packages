@@ -24,3 +24,6 @@ accounts-ui
 accounts-github
 github-config-ui
 react-meteor-data
+themeteorchef:bert
+underscore
+session

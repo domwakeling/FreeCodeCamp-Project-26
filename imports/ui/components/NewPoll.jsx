@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NewPollOption from './NewPollOption.jsx';
+import { Bert } from 'meteor/themeteorchef:bert';
 
 export default class NewPoll extends React.Component {
 
@@ -58,12 +59,24 @@ export default class NewPoll extends React.Component {
                 if (option === '') {foundBlank = true;}
             });
             if (!foundBlank) {
-                this.props.savePollCallback(subject, this.state.options);
+                this.props.createPollCallback(subject, this.state.options);
             } else {
-                // deal with blank option
+                Bert.alert({
+                    title: 'Unable to save poll',
+                    type: 'danger',
+                    message: 'Unable to save with blank options',
+                    style: 'growl-top-right',
+                    icon: 'fa-warning'
+                });
             }
         } else {
-            // deal with blank subject
+            Bert.alert({
+                title: 'Unable to save poll',
+                type: 'danger',
+                message: 'Please name your poll',
+                style: 'growl-top-right',
+                icon: 'fa-warning'
+            });
         }
     }
 
@@ -97,7 +110,7 @@ export default class NewPoll extends React.Component {
         // renderOptions)
         this.boundReportUpdate = this.reportUpdate.bind();
 
-        // This looks a little messy but is actually rendering:
+        // Render:
         // - a header 'New Poll'
         // - a poll name input + label
         // - an 'options' label + the options via renderOptions function
@@ -147,5 +160,5 @@ export default class NewPoll extends React.Component {
 
 NewPoll.propTypes = {
     cancelCallback: PropTypes.func,
-    savePollCallback: PropTypes.func
+    createPollCallback: PropTypes.func
 };

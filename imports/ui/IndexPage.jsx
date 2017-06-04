@@ -6,6 +6,9 @@ import { Meteor } from 'meteor/meteor';
 import { Polls } from '../api/polls.js';
 import PollListItem from './components/PollListItem.jsx';
 import NewPoll from './components/NewPoll.jsx';
+import { Bert } from 'meteor/themeteorchef:bert';
+import PollDetailView from './components/PollDetail.jsx';
+import { _ } from 'underscore';
 
 // Main index page
 class IndexPage extends React.Component {
@@ -13,49 +16,94 @@ class IndexPage extends React.Component {
     // Constructor to set state and bind functions
     constructor(props) {
         super(props);
-        this.state = { entryPoint: 'index' };
+        this.state = {
+            entryPoint: 'index',
+            selectedPoll: ''
+        };
         this.newPoll = this.newPoll.bind(this);
         this.cancelPoll = this.cancelPoll.bind(this);
     }
 
-    // Iterate through the polls property (linked to collection) to render
-    // them in summary state
-    renderPoll() {
-        return this.props.polls.map((poll) => (
-            <PollListItem key={poll._id} poll={poll} />
-        ));
-    }
-
-    // Handler for 'new poll' button pressed - changes this.state.entryPoint to
-    // 'add' which causes the NewPoll component to be rendered through the
-    // logic in render() and helper functions
-    newPoll() {
-        this.setState({
-            entryPoint: 'add'
-        });
-    }
-
-    // Handler passed to NewPoll as callback, to deal with cancelling the poll;
-    // this.state.entryPoint set to 'index' which will cause poll to disappear
-    // through logic in render();
+    // Handler passed to NewPoll as callback to deal with cancelling the poll;
+    // changes state to 'index', render() acts
     cancelPoll() {
         this.setState({
-            entryPoint: 'index'
+            entryPoint: 'index',
+            selectedPoll: ''
         });
     }
 
     // Handler passed to NewPoll as callback, to deal with saving the poll;
     // add object to collection and change this.state.entryPoint to 'index'
-    savePoll(subject, options) {
+    createPoll(subject, options) {
+        const counts = options.map(() => 0);
         Polls.insert({
             createdBy: Meteor.userId(),
             subject: subject,
-            options: options
+            options: options,
+            votesCount: counts,
+            voters: []
         });
 
         this.setState({
-            entryPoint: 'index'
+            entryPoint: 'index',
+            selectedPoll: ''
         });
+    }
+
+    // Handler for 'new poll' button - changes state to 'add', render() acts
+    newPoll() {
+        this.setState({
+            entryPoint: 'add',
+            selectedPoll: ''
+        });
+    }
+
+    // Handler passed to PollListItem as callback, to deal with user selection
+    // of a poll - sets state for selected poll ref and sets view state
+    selectPollFromList(pollId) {
+        const selectedPoll = _.find(this.props.polls, {_id: pollId} );
+        if (selectedPoll !== null) {
+            this.setState({
+                entryPoint: 'detail',
+                selectedPoll: pollId
+            });
+        } else {
+            Bert.alert({
+                title: 'ERROR',
+                type: 'danger',
+                message: 'Unable to select poll',
+                style: 'growl-top-right',
+                icon: 'fa-warning'
+            });
+        }
+    }
+
+    // Iterate through the polls property (linked to collection) to render
+    // them in summary state, called in renderMajor()
+    renderPollList() {
+        this.boundSelectPoll = this.selectPollFromList.bind(this);
+        return this.props.polls.map((poll) => (
+            <PollListItem
+                key={poll._id}
+                poll={poll}
+                selectCallback={this.boundSelectPoll}
+            />
+        ));
+    }
+
+    // Check that we have a valid poll selected and if so render it
+    renderPollDetail() {
+        const selectedPoll = _.find(
+            this.props.polls, {_id: this.state.selectedPoll}
+        );
+        if (selectedPoll) {
+            return (
+                <PollDetailView poll={selectedPoll}/>
+            );
+        } else {
+            return <div />;
+        }
     }
 
     // Helper function to control what is rendered in the 'container-minor'
@@ -74,6 +122,16 @@ class IndexPage extends React.Component {
                     </button> :
                     <p>Not logged in</p>;
 
+            case 'detail':
+                return (
+                    <button
+                        className='main-button'
+                        onClick={this.cancelPoll}
+                        >
+                        Back
+                    </button>
+                );
+
             // default to empty
             default:
                 return '';
@@ -85,23 +143,25 @@ class IndexPage extends React.Component {
 
         switch (this.state.entryPoint) {
 
-            // if 'index' render list of polls
-            case 'index':
-                return (this.renderPoll() );
-
-            // default to showing a NewPoll
-            // TODO: change this once logic completed, should default to list?
-            default:
-                this.boundSavePoll = this.savePoll.bind(this);
+            // if 'add' show NewPoll to create a new poll
+            case 'add':
+                this.boundCreatePoll = this.createPoll.bind(this);
                 this.boundCancelPoll = this.cancelPoll.bind(this);
                 return (
                     <div>
                         <NewPoll
                             cancelCallback={this.boundCancelPoll}
-                            savePollCallback={this.boundSavePoll}
+                            createPollCallback={this.boundCreatePoll}
                         />
                     </div>
                 );
+
+            case 'detail':
+                return (this.renderPollDetail() );
+
+            // default to showing the list of polls(= 'index')
+            default:
+                return (this.renderPollList() );
         }
 
     }
