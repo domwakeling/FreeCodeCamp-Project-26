@@ -30,6 +30,15 @@ class PollDetailView extends React.Component {
         }
     }
 
+    // Callback function to deal with a new optoin being added in voted
+    addOptionFromVote(newOption) {
+        // newOption blank *should* be caught in PollDetailVote, but ...
+        if (newOption !== '') {
+            Meteor.call('polls.addOption', this.props.pollId, newOption);
+            console.log('May have worked?');
+        }
+    }
+
     // This is a temporary fix
     // TODO: write the data visualisation properly!
     renderVisualisation() {
@@ -45,6 +54,7 @@ class PollDetailView extends React.Component {
     renderVoting(poll) {
         return (
             <PollDetailVote
+                addCallback={this.boundAddOptionFromVote}
                 poll={poll}
             />
         );
@@ -62,6 +72,7 @@ class PollDetailView extends React.Component {
     // Show subject and call a visualisastion
     render() {
         const poll = _.find(this.props.polls, {_id: this.props.pollId});
+        this.boundAddOptionFromVote = this.addOptionFromVote.bind(this);
         return (
             <div>
                 <h3>{poll.subject}</h3>

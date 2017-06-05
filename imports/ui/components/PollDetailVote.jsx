@@ -1,7 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { Bert } from 'meteor/themeteorchef:bert';
 
 export default class PollDetailVote extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.addOptionHandler = this.addOptionHandler.bind(this);
+    }
 
     renderRadio() {
 
@@ -20,15 +27,59 @@ export default class PollDetailVote extends React.Component {
         });
     }
 
+    addOptionHandler() {
+        const newValue = $('#newPollOption')[0].value;
+        if (newValue !== '') {
+            $('#newPollOption').val('');
+            this.props.addCallback(newValue);
+        } else {
+            Bert.alert({
+                title: 'Empty option',
+                type: 'danger',
+                message: 'Can\'t add an empty option!',
+                style: 'growl-top-right',
+                icon: 'fa-warning'
+            });
+        }
+    }
+
     render() {
         return (
-            <form>
-                {this.renderRadio()}
-            </form>
+            <div>
+                <p>Please select from the following options</p>
+                <form>
+                    {this.renderRadio()}
+                    <button
+                        className='main-button'
+                        >
+                        Vote
+                    </button>
+                </form>
+                { Meteor.user() ?
+                    <div>
+                        <br />
+                        <p>Or add a new option</p>
+                        <div className='poll-option'>
+                            <input
+                                className='input-text'
+                                id='newPollOption'
+                                type='text'
+                            />
+                        </div>
+                        <button
+                            className='main-button'
+                            onClick={this.addOptionHandler}
+                            >
+                            Add
+                        </button>
+                    </div> : ''
+                }
+            </div>
         );
     }
 }
 
 PollDetailVote.propTypes = {
+    addCallback: PropTypes.func,
     poll: PropTypes.object.isRequired
 };
