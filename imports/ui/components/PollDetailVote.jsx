@@ -8,6 +8,7 @@ export default class PollDetailVote extends React.Component {
     constructor(props) {
         super(props);
         this.addOptionHandler = this.addOptionHandler.bind(this);
+        this.saveOptionHandler = this.saveOptionHandler.bind(this);
     }
 
     renderRadio() {
@@ -43,18 +44,34 @@ export default class PollDetailVote extends React.Component {
         }
     }
 
+    saveOptionHandler() {
+        const chosenOptionIndex = $( 'input[type=radio]:checked' ).val();
+        if (chosenOptionIndex) {
+            this.props.saveCallback(chosenOptionIndex);
+        } else {
+            Bert.alert({
+                title: 'No option chosen',
+                type: 'danger',
+                message: 'Select an option before voting!',
+                style: 'growl-top-right',
+                icon: 'fa-warning'
+            });
+        }
+    }
+
     render() {
         return (
             <div>
                 <p>Please select from the following options</p>
                 <form>
                     {this.renderRadio()}
-                    <button
-                        className='main-button'
-                        >
-                        Vote
-                    </button>
                 </form>
+                <button
+                    className='main-button'
+                    onClick={this.saveOptionHandler}
+                    >
+                    Vote
+                </button>
                 { Meteor.user() ?
                     <div>
                         <br />
@@ -81,5 +98,6 @@ export default class PollDetailVote extends React.Component {
 
 PollDetailVote.propTypes = {
     addCallback: PropTypes.func,
-    poll: PropTypes.object.isRequired
+    poll: PropTypes.object.isRequired,
+    saveCallback: PropTypes.func
 };

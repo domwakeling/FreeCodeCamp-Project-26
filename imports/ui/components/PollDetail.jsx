@@ -30,12 +30,27 @@ class PollDetailView extends React.Component {
         }
     }
 
-    // Callback function to deal with a new optoin being added in voted
+    // Callback function to deal with a new option being added in vote
     addOptionFromVote(newOption) {
         // newOption blank *should* be caught in PollDetailVote, but ...
         if (newOption !== '') {
             Meteor.call('polls.addOption', this.props.pollId, newOption);
-            console.log('May have worked?');
+        }
+    }
+
+    // Callback function to deal with an option being voted on
+    addVoteFromVote(chosenIndex) {
+        // undefined index *should* be caught in PollDetailVote, but ...
+        if (chosenIndex) {
+            Meteor.call('polls.saveVote', this.props.pollId, chosenIndex);
+            if (!Meteor.user()) {
+                if (Session.get('votedOn')) {
+                    let votedOn = Session.get('votedOn');
+                    Session.set('votedOn', votedOn);
+                } else {
+                    Session.set('votedOn', [this.props.pollId]);
+                }
+            }
         }
     }
 
@@ -50,12 +65,13 @@ class PollDetailView extends React.Component {
         });
     }
 
-    // Render the poll voting view
+    // Render the poll voting view, called inside renderView
     renderVoting(poll) {
         return (
             <PollDetailVote
                 addCallback={this.boundAddOptionFromVote}
                 poll={poll}
+                saveCallback={this.boundAddVoteFromVote}
             />
         );
     }
@@ -73,6 +89,7 @@ class PollDetailView extends React.Component {
     render() {
         const poll = _.find(this.props.polls, {_id: this.props.pollId});
         this.boundAddOptionFromVote = this.addOptionFromVote.bind(this);
+        this.boundAddVoteFromVote = this.addVoteFromVote.bind(this);
         return (
             <div>
                 <h3>{poll.subject}</h3>
