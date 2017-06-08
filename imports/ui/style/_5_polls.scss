@@ -1,0 +1,13 @@
+.pollTitle {
+    background-color: $color__project-theme;
+    color: $color__project-inverse;
+    border-radius: 3px;
+    padding: 3px 3px 3px 8px;
+
+    i {
+        float: right;
+        padding-top: 5px;
+        padding-right: 5px;
+        cursor: pointer;
+    }
+}

@@ -1,13 +1,22 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Session } from 'meteor/session';
 
 export const Polls = new Mongo.Collection('polls');
 
 Meteor.methods({
 
-    'polls.addOption'(pollId, text) {
+    'polls.newPoll'(subject, options) {
+        const counts = options.map(() => 0);
+        Polls.insert({
+            createdBy: Meteor.userId(),
+            subject: subject,
+            options: options,
+            votesCount: counts,
+            voters: []
+        });
+    },
 
+    'polls.addOption'(pollId, text) {
         Polls.update(pollId,
             {$addToSet: {options: text}},
         );
@@ -22,7 +31,7 @@ Meteor.methods({
         incModifier.$inc['votesCount.' + chosenIndex] = 1;
         Polls.update(pollId, incModifier);
 
-        // if there's a logged-in user, add ...
+        // if there's a logged-in user, add their ID ...
         if (Meteor.user()) {
             Polls.update(pollId, { $addToSet: { voters: Meteor.userId() } });
         }

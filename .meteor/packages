@@ -27,3 +27,4 @@ react-meteor-data
 themeteorchef:bert
 underscore
 session
+fortawesome:fontawesome@=4.7.0

@@ -6,7 +6,7 @@ import { _ } from 'underscore';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Polls } from '../../api/polls.js';
 import PollDetailVote from './PollDetailVote.jsx';
-// import { Bert } from 'meteor/themeteorchef:bert';
+import { Bert } from 'meteor/themeteorchef:bert';
 
 class PollDetailView extends React.Component {
 
@@ -15,7 +15,7 @@ class PollDetailView extends React.Component {
         const poll = _.find(this.props.polls, {_id: this.props.pollId});
         // if someone is logged in ...
         if (this.props.user) {
-            // get the user id and check if they're in 'voters' array
+            // if there's a user get ID and check if they're in 'voters' array
             const user = Meteor.userId();
             return _.contains(poll.voters, user);
 
@@ -54,6 +54,21 @@ class PollDetailView extends React.Component {
         }
     }
 
+    showLink() {
+        const rootUrl = Meteor.absoluteUrl();
+        const poll = _.find(this.props.polls, {_id: this.props.pollId});
+        const fullUrl = rootUrl + 'poll/' + poll._id;
+        Bert.defaults = {hideDelay: 10000};
+        Bert.alert({
+            title: 'Copy this link to share',
+            type: 'success',
+            message: fullUrl,
+            style: 'fixed-top',
+            icon: 'fa-check'
+        });
+        Bert.defaults = {hideDelay: 3500};
+    }
+
     // This is a temporary fix
     // TODO: write the data visualisation properly!
     renderVisualisation() {
@@ -90,9 +105,15 @@ class PollDetailView extends React.Component {
         const poll = _.find(this.props.polls, {_id: this.props.pollId});
         this.boundAddOptionFromVote = this.addOptionFromVote.bind(this);
         this.boundAddVoteFromVote = this.addVoteFromVote.bind(this);
+        this.boundShowLink = this.showLink.bind(this);
         return (
             <div>
-                <h3>{poll.subject}</h3>
+                <div className='pollTitle'>
+                    {poll.subject}
+                    <i className='fa fa-link float-right'
+                        onClick={this.boundShowLink}
+                    />
+                </div>
                 {this.renderView(poll)}
             </div>
         );

@@ -24,8 +24,30 @@ class IndexPage extends React.Component {
         this.cancelPoll = this.cancelPoll.bind(this);
     }
 
+    // if the path is /poll/{17-char-id} and we're not in detail, call helper
+    componentDidUpdate() {
+        const currSt = this.state;
+        if (currSt.entryPoint !== 'detail' || currSt.selectedPoll === '') {
+            if (/^\/poll\/\w{17}$/.test(this.props.location.pathname)) {
+                this.viewPollUsingRoute(this.props.location.pathname);
+            }
+        }
+    }
+
+    // try to extract a pollId from route and if valid, change state
+    viewPollUsingRoute(route) {
+        const pollId = route.match(/^\/poll\/(\w{17})$/)[1];
+        if (Polls.findOne( {_id: pollId} ) ) {
+            this.setState({
+                entryPoint: 'detail',
+                selectedPoll: pollId
+            });
+        } else {
+            console.log('Invalid route: no poll with _id', pollId);
+        }
+    }
+
     // Handler passed to NewPoll as callback to deal with cancelling the poll;
-    // changes state to 'index', render() acts
     cancelPoll() {
         this.setState({
             entryPoint: 'index',
@@ -34,17 +56,8 @@ class IndexPage extends React.Component {
     }
 
     // Handler passed to NewPoll as callback, to deal with saving the poll;
-    // add object to collection and change this.state.entryPoint to 'index'
     createPoll(subject, options) {
-        const counts = options.map(() => 0);
-        Polls.insert({
-            createdBy: Meteor.userId(),
-            subject: subject,
-            options: options,
-            votesCount: counts,
-            voters: []
-        });
-
+        Meteor.call('polls.newPoll', subject, options);
         this.setState({
             entryPoint: 'index',
             selectedPoll: ''
@@ -59,8 +72,7 @@ class IndexPage extends React.Component {
         });
     }
 
-    // Handler passed to PollListItem as callback, to deal with user selection
-    // of a poll - sets state for selected poll ref and sets view state
+    // Handler passed to PollListItem as callback when user selects poll
     selectPollFromList(pollId) {
         const selectedPoll = _.find(this.props.polls, {_id: pollId} );
         if (selectedPoll !== null) {
@@ -79,8 +91,7 @@ class IndexPage extends React.Component {
         }
     }
 
-    // Iterate through the polls property (linked to collection) to render
-    // them in summary state, called in renderMajor()
+    // Render the poll names in a list of PollListItem components
     renderPollList() {
         this.boundSelectPoll = this.selectPollFromList.bind(this);
         return this.props.polls.map((poll) => (
@@ -141,7 +152,6 @@ class IndexPage extends React.Component {
 
         switch (this.state.entryPoint) {
 
-            // if 'add' show NewPoll to create a new poll
             case 'add':
                 this.boundCreatePoll = this.createPoll.bind(this);
                 this.boundCancelPoll = this.cancelPoll.bind(this);
@@ -157,11 +167,9 @@ class IndexPage extends React.Component {
             case 'detail':
                 return (this.renderPollDetail() );
 
-            // default to showing the list of polls(= 'index')
             default:
                 return (this.renderPollList() );
         }
-
     }
 
     // Render main part of app; this calls helper functions which do the work
@@ -181,12 +189,12 @@ class IndexPage extends React.Component {
 
 // Define props types, error checking and prevents eslint error reports
 IndexPage.propTypes = {
+    location: PropTypes.object,
     polls: PropTypes.array.isRequired,
     user: PropTypes.object
 };
 
-// Wrap the component in a createContainer component, in order that data can
-// be rendered
+// Wrap the component in a createContainer component, so data can be rendered
 export default createContainer(() => {
     return {
         polls: Polls.find({}).fetch(),
