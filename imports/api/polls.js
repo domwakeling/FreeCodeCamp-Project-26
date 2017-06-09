@@ -35,6 +35,10 @@ Meteor.methods({
         if (Meteor.user()) {
             Polls.update(pollId, { $addToSet: { voters: Meteor.userId() } });
         }
+    },
+
+    'polls.deletePoll'(pollId) {
+        Polls.remove({_id: pollId});
     }
 
 });

@@ -22,6 +22,7 @@ class IndexPage extends React.Component {
         };
         this.newPoll = this.newPoll.bind(this);
         this.cancelPoll = this.cancelPoll.bind(this);
+        this.deletePoll = this.deletePoll.bind(this);
     }
 
     // if the path is /poll/{17-char-id} and we're not in detail, call helper
@@ -47,12 +48,30 @@ class IndexPage extends React.Component {
         }
     }
 
+    // Helper function checking if there's an active poll owned by user
+    activePollByUser() {
+        if (this.state.selectedPoll !== '' && Meteor.user()) {
+            const pollId = this.state.selectedPoll;
+            const currentPoll = Polls.findOne( {_id: pollId} );
+            if (currentPoll) {
+                return currentPoll.createdBy === Meteor.userId();
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     // Handler passed to NewPoll as callback to deal with cancelling the poll;
     cancelPoll() {
         this.setState({
             entryPoint: 'index',
             selectedPoll: ''
         });
+        if (this.props.location.pathname !== '/') {
+            this.props.history.push('/');
+        }
     }
 
     // Handler passed to NewPoll as callback, to deal with saving the poll;
@@ -62,6 +81,18 @@ class IndexPage extends React.Component {
             entryPoint: 'index',
             selectedPoll: ''
         });
+    }
+
+    deletePoll() {
+        const pollId = this.state.selectedPoll;
+        this.setState({
+            entryPoint: 'index',
+            selectedPoll: ''
+        });
+        if (this.props.location.pathname !== '/') {
+            this.props.history.push('/');
+        }
+        Meteor.call('polls.deletePoll', pollId);
     }
 
     // Handler for 'new poll' button - changes state to 'add', render() acts
@@ -123,22 +154,34 @@ class IndexPage extends React.Component {
             // if 'index', we want 'Make new poll' if user signed in
             case 'index':
                 return this.props.user ?
-                    <button
-                        className='main-button'
-                        onClick={this.newPoll}
-                        >
+                    <button className='main-button'
+                            onClick={this.newPoll}
+                            >
                         Make new poll
                     </button> :
                     <p>Not logged in</p>;
 
             case 'detail':
+                var showDelete = this.activePollByUser();
                 return (
-                    <button
-                        className='main-button'
-                        onClick={this.cancelPoll}
-                        >
-                        Back
-                    </button>
+                    <div>
+                        <button className='main-button'
+                                onClick={this.cancelPoll}
+                                >
+                            Back
+                        </button>
+                        { showDelete ?
+                            <div>
+                                <div className='clearfix' />
+                                <button
+                                    className='main-button btn-cancel space-top'
+                                    onClick={this.deletePoll}
+                                    >
+                                    Delete poll
+                                </button>
+                            </div> : ''
+                        }
+                    </div>
                 );
 
             // default to empty
@@ -189,6 +232,7 @@ class IndexPage extends React.Component {
 
 // Define props types, error checking and prevents eslint error reports
 IndexPage.propTypes = {
+    history: PropTypes.object,
     location: PropTypes.object,
     polls: PropTypes.array.isRequired,
     user: PropTypes.object
