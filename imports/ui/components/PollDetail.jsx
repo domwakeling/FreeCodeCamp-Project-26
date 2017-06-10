@@ -6,7 +6,6 @@ import { _ } from 'underscore';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Polls } from '../../api/polls.js';
 import PollDetailVote from './PollDetailVote.jsx';
-import { Bert } from 'meteor/themeteorchef:bert';
 
 class PollDetailView extends React.Component {
 
@@ -55,18 +54,7 @@ class PollDetailView extends React.Component {
     }
 
     showLink() {
-        const rootUrl = Meteor.absoluteUrl();
-        const poll = _.find(this.props.polls, {_id: this.props.pollId});
-        const fullUrl = rootUrl + 'poll/' + poll._id;
-        Bert.defaults = {hideDelay: 10000};
-        Bert.alert({
-            title: 'Copy this link to share',
-            type: 'success',
-            message: fullUrl,
-            style: 'fixed-top',
-            icon: 'fa-check'
-        });
-        Bert.defaults = {hideDelay: 3500};
+        $('#pollLink').toggle(150);
     }
 
     // This is a temporary fix
@@ -103,6 +91,8 @@ class PollDetailView extends React.Component {
     // Show subject and call a visualisastion
     render() {
         const poll = _.find(this.props.polls, {_id: this.props.pollId});
+        const rootUrl = Meteor.absoluteUrl();
+        const fullUrl = rootUrl + 'poll/' + poll._id;
         this.boundAddOptionFromVote = this.addOptionFromVote.bind(this);
         this.boundAddVoteFromVote = this.addVoteFromVote.bind(this);
         this.boundShowLink = this.showLink.bind(this);
@@ -113,6 +103,10 @@ class PollDetailView extends React.Component {
                     <i className='fa fa-link float-right'
                         onClick={this.boundShowLink}
                     />
+                </div>
+                <div id='pollLink'>
+                    Copy this address to share :&nbsp;
+                    <span className='urlLink'>{fullUrl}</span>
                 </div>
                 {this.renderView(poll)}
             </div>

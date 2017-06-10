@@ -18,11 +18,13 @@ class IndexPage extends React.Component {
         super(props);
         this.state = {
             entryPoint: 'index',
-            selectedPoll: ''
+            selectedPoll: '',
+            filter: false
         };
         this.newPoll = this.newPoll.bind(this);
         this.cancelPoll = this.cancelPoll.bind(this);
         this.deletePoll = this.deletePoll.bind(this);
+        this.filterSwitch = this.filterSwitch.bind(this);
     }
 
     // if the path is /poll/{17-char-id} and we're not in detail, call helper
@@ -61,6 +63,13 @@ class IndexPage extends React.Component {
         } else {
             return false;
         }
+    }
+
+    // Helper function to switch state of filter
+    filterSwitch() {
+        const filtered = this.state.filter;
+        console.log(filtered);
+        this.setState( {filter: !filtered} );
     }
 
     // Handler passed to NewPoll as callback to deal with cancelling the poll;
@@ -125,7 +134,11 @@ class IndexPage extends React.Component {
     // Render the poll names in a list of PollListItem components
     renderPollList() {
         this.boundSelectPoll = this.selectPollFromList.bind(this);
-        return this.props.polls.map((poll) => (
+        var pollsToShow = this.state.filter ?
+            this.props.polls.filter((poll) => poll.createdBy === Meteor.userId()) :
+            this.props.polls;
+        // return this.props.polls.map((poll) => (
+        return pollsToShow.map((poll) => (
             <PollListItem
                 key={poll._id}
                 poll={poll}
@@ -153,12 +166,22 @@ class IndexPage extends React.Component {
 
             // if 'index', we want 'Make new poll' if user signed in
             case 'index':
+                var filteredText = this.state.filter ? 'all' : 'your';
                 return this.props.user ?
-                    <button className='main-button'
-                            onClick={this.newPoll}
+                    <div>
+                        <button className='main-button'
+                                onClick={this.newPoll}
+                                >
+                            Make new poll
+                        </button>
+                        <div className='clearfix' />
+                        <button
+                            className='main-button space-top'
+                            onClick={this.filterSwitch}
                             >
-                        Make new poll
-                    </button> :
+                            Show {filteredText} polls
+                        </button>
+                    </div> :
                     <p>Not logged in</p>;
 
             case 'detail':
@@ -211,7 +234,11 @@ class IndexPage extends React.Component {
                 return (this.renderPollDetail() );
 
             default:
-                return (this.renderPollList() );
+                return (
+                    <div>
+                        <h4>Select a poll to vote and see results</h4>
+                        {this.renderPollList() }
+                    </div>);
         }
     }
 

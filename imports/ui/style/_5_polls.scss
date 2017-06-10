@@ -11,3 +11,14 @@
         cursor: pointer;
     }
 }
+
+#pollLink {
+    display: none;
+    margin-top: $structure__font-pad_horiz;
+    margin-bottom: $structure__font-pad_horiz;
+    font-size: 0.9rem;
+
+    .urlLink {
+        color: $color__project-theme;
+    }
+}

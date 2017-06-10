@@ -13,6 +13,7 @@ h5,
 h6 {
     @include font__head-font;
     color: $color__title-font-color;
+    margin-bottom: $structure__font-pad_horiz;
 }
 
 h1 {
