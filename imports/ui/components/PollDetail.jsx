@@ -6,6 +6,7 @@ import { _ } from 'underscore';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Polls } from '../../api/polls.js';
 import PollDetailVote from './PollDetailVote.jsx';
+import PollChart from './PollChartView.jsx';
 
 class PollDetailView extends React.Component {
 
@@ -45,6 +46,7 @@ class PollDetailView extends React.Component {
             if (!Meteor.user()) {
                 if (Session.get('votedOn')) {
                     let votedOn = Session.get('votedOn');
+                    votedOn.push(this.props.pollId);
                     Session.set('votedOn', votedOn);
                 } else {
                     Session.set('votedOn', [this.props.pollId]);
@@ -57,15 +59,20 @@ class PollDetailView extends React.Component {
         $('#pollLink').toggle(150);
     }
 
-    // This is a temporary fix
-    // TODO: write the data visualisation properly!
+    // Render data visualisation of poll
     renderVisualisation() {
         const poll = _.find(this.props.polls, {_id: this.props.pollId});
-        return poll.options.map((option, idx) => {
-            return (
-                <p key={idx}>{option}: {poll.votesCount[idx]}</p>
-            );
-        });
+        // return poll.options.map((option, idx) => {
+            // return (
+        return (
+            <PollChart
+                labels={poll.options}
+                scores={poll.votesCount}
+            />
+                // {/* <p key={idx}>{option}: {poll.votesCount[idx]}</p> */}
+            // );
+        // });
+        );
     }
 
     // Render the poll voting view, called inside renderView

@@ -68,7 +68,6 @@ class IndexPage extends React.Component {
     // Helper function to switch state of filter
     filterSwitch() {
         const filtered = this.state.filter;
-        console.log(filtered);
         this.setState( {filter: !filtered} );
     }
 
@@ -134,8 +133,11 @@ class IndexPage extends React.Component {
     // Render the poll names in a list of PollListItem components
     renderPollList() {
         this.boundSelectPoll = this.selectPollFromList.bind(this);
+        // set the props being shown based on filter status
         var pollsToShow = this.state.filter ?
-            this.props.polls.filter((poll) => poll.createdBy === Meteor.userId()) :
+            this.props.polls.filter((poll) =>
+                poll.createdBy === Meteor.userId()
+            ) :
             this.props.polls;
         // return this.props.polls.map((poll) => (
         return pollsToShow.map((poll) => (
