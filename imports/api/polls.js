@@ -3,6 +3,13 @@ import { Mongo } from 'meteor/mongo';
 
 export const Polls = new Mongo.Collection('polls');
 
+if (Meteor.isServer) {
+  // This code only runs on the server
+  Meteor.publish('polls', function tasksPublication() {
+    return Polls.find();
+  });
+}
+
 Meteor.methods({
 
     'polls.newPoll'(subject, options) {

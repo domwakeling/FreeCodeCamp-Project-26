@@ -269,6 +269,7 @@ IndexPage.propTypes = {
 
 // Wrap the component in a createContainer component, so data can be rendered
 export default createContainer(() => {
+    Meteor.subscribe('polls');
     return {
         polls: Polls.find({}).fetch(),
         user: Meteor.user()

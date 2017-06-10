@@ -129,6 +129,7 @@ PollDetailView.propTypes = {
 };
 
 export default createContainer(() => {
+    Meteor.subscribe('polls');
     return {
         polls: Polls.find({}).fetch(),
         user: Meteor.user()
